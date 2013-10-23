@@ -6,7 +6,11 @@ body {
     color: white;
 }
 
-p.base-url, .footer {
+body a {
+    color: white;
+}
+
+.base-url, .footer {
     font-family: "source code pro", monospace;
     font-size: 0.8em;
     margin: 0 0 0 0;

@@ -157,7 +157,7 @@ $(window).load(function() {
         load_all_graphs();
     }
 
-    $(".base-url").text(base_url());
+    $(".base-url-value").text(base_url());
     $("#graphite-host").text(graphite_host);
     $("#dash-name").text(dash_name);
     $("#dash-names").text(all_dash_names().join(", "));
