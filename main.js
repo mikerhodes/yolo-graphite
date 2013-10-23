@@ -21,6 +21,19 @@ function init_targets() {
     console.log("[init_targets] targets: " + localStorage['targets']);
 }
 
+function all_dash_names() {
+    var targets = localStorage['targets'];
+    targets = JSON.parse(targets);
+    var keys= [];
+    for (var name in targets) {
+        if (targets.hasOwnProperty(name)) {
+            keys.push(name);
+        }
+    }
+    console.log("[all_dash_names] " + keys);
+    return keys;
+}
+
 function all_targets_for_dash(_dash_name) {
     var targets = localStorage['targets'];
     console.log("[all_targets_for_dash] targets: " + localStorage['targets']);
@@ -149,6 +162,7 @@ $(window).load(function() {
     $(".base-url").text(base_url());
     $("#graphite-host").text(graphite_host);
     $("#dash-name").text(dash_name);
+    $("#dash-names").text(all_dash_names().join(", "));
 
     var intervalID = window.setInterval(refresh_all_graphs, 60000);
 
