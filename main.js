@@ -67,6 +67,12 @@ function remove_target(target_index) {
     update_targets_for_dash(dash_name, targets);
 }
 
+function update_target(target_index, target_details) {
+    var targets = all_targets_for_dash(dash_name);
+    targets.splice(target_index, 1, target_details);
+    update_targets_for_dash(dash_name, targets);
+}
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -99,11 +105,17 @@ function input_params_for(target_index) {
 function appendGraph(target_index) {
     var url = url_for(target_index);
     var input_params = input_params_for(target_index);
+    var refresh = target_for_index(target_index)["refresh"];
+
     var insert = '<div class="graph" data-targetIndex="' + target_index + '">';
     insert += '<p class="legend">' + input_params + ' <a href="' + url + '">go</a></p>';
     insert += '<img src="' + url + '" width="1000" height="300" class="img-graph"/>';
     insert += '<div class="controls">';
-    insert += '<p><input type="checkbox" class="refresh"/> Refresh</p>';
+    if (refresh) {
+        insert += '<p><input type="checkbox" class="refresh" checked="checked"/> Refresh</p>';
+    } else {
+        insert += '<p><input type="checkbox" class="refresh"/> Refresh</p>';
+    }
     insert += '<p><input type="button" value="Remove" class="remove-graph-button"/></p>';
     insert += '</div>';
     insert += '</div>';
@@ -197,6 +209,18 @@ $(window).load(function() {
         }
 
         return false;
+    });
+
+    $("#graphs").on("change", ".refresh", function() {
+        var that = $(this);
+
+        var graph_el = that.closest(".graph");
+        var target_index = parseInt(graph_el.attr("data-targetIndex"));
+
+        var details = target_for_index(target_index);
+        details["refresh"] = that.is(":checked");
+        console.log('[refresh] saved refresh: ' + details["refresh"]);
+        update_target(target_index, details);
     });
 
 });
