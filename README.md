@@ -3,6 +3,10 @@ yolo-graphite
 
 A quick and dirty graphite dashboard using your browser's localStorage.
 
+You can have several dashboards, each with several graphs.
+
+## Get started
+
 There's a version on GH-page for this repo:
 
 http://mikerhodes.github.io/yolo-graphite/?host=your.graphite.host.com
