@@ -82,7 +82,6 @@ function base_url() {
     var params = new Array(
         "width=1000",
         "height=300",
-        "_salt=1381682531.043",
         "lineWidth=2",
         "yMin=0"
         );
