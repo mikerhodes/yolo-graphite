@@ -172,6 +172,7 @@ $(window).load(function() {
     $("#graphite-host").text(graphite_host);
     $("#dash-name").text(dash_name);
     $("#dash-names").text(all_dash_names().join(", "));
+    document.title = dash_name + " &mdash; yolo-graphite";
 
     var intervalID = window.setInterval(refresh_all_graphs, 60000);
 
