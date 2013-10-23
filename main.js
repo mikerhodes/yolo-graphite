@@ -1,6 +1,4 @@
 
-
-
 var uri = document.location;
 var parsed = parseUri(uri);
 
