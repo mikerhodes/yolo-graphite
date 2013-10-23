@@ -29,9 +29,11 @@ a `target` parameter and probably a `from`.
 
 ## Dashboards
 
-You can have multiple dashboards. Simply add `dash=name` to the URL:
+You can have multiple dashboards. Simply add `dash=name` to the URL. This URL will
+take you to your default dashboard, named `default`, which is the one you get if you
+don't specify a dashboard in the URL:
 
-http://mikerhodes.github.io/yolo-graphite/?host=your.graphite.host.com&dash=mydash
+http://mikerhodes.github.io/yolo-graphite/?host=your.graphite.host.com&dash=default
 
 Visiting a dashboard for the first time creates it in your local storage. It'll be
 empty to start with, as you'd expect.
