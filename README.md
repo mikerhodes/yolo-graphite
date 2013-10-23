@@ -11,7 +11,7 @@ so it's simple to have several up at a time.
 
 ## Get started
 
-There's a version on GH-page for this repo:
+There's a version on GH-page for this repo. You always need to provide your `host`.
 
 http://mikerhodes.github.io/yolo-graphite/?host=your.graphite.host.com
 
