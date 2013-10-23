@@ -1,0 +1,54 @@
+
+body {
+    width: 1100px;
+    margin: 10px auto 30px auto;
+    background: black;
+    color: white;
+}
+
+p.base-url, .footer {
+    font-family: "source code pro", monospace;
+    font-size: 0.8em;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+.footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #555;
+}
+
+#add-graph {
+    border: 1px solid black;
+    margin: 10px 10px;
+    padding: 10px;
+}
+
+#add-graph textarea {
+    font-family: "source code pro", monospace;
+    width: 100%;
+}
+
+#graphs {
+    text-align: center;
+}
+
+#graphs .graph {
+    clear: both;
+    margin: 5px auto;
+    padding: 10px 0;
+}
+
+.graph img {
+    float: left;
+}
+
+#graphs .controls {
+    float: right;
+}
+
+.graph .legend {
+    font-family: "source code pro", monospace;
+    font-size: 0.8em;
+}
