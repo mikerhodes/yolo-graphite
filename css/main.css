@@ -4,17 +4,22 @@ body {
     margin: 10px auto 30px auto;
     background: black;
     color: white;
+    font-family: "source code pro", monospace;
 }
 
 body a {
     color: white;
 }
 
-.base-url, .footer {
-    font-family: "source code pro", monospace;
+.base-url, .footer, .show-hide-add {
     font-size: 0.8em;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
+}
+
+.show-hide-add {
+    text-align: center;
+    font-size: 0.6em;
 }
 
 .footer {

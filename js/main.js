@@ -183,6 +183,7 @@ $(window).load(function() {
     init_targets();
     load_all_graphs();
 
+    // Set up labels and things in the page.
     $(".base-url-value").text(base_url());
     $("#graphite-host").text(graphite_host);
     $("#dash-name").text(dash_name);
@@ -190,15 +191,25 @@ $(window).load(function() {
     $("#dash-names").text(all_dash_names().join(", "));
     document.title = dash_name + " -- yolo-graphite";
 
+    // Refresh graphs -- on interval and depending on page visibility
     var intervalID = window.setInterval(refresh_all_graphs, 60000);
-    // Handle page visibility change
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
 
+    // Show/hide the add form, and store state
+    if (localStorage["show-add-form"] == "false") {
+        $("#add-graph").hide();
+    }
+    $("#show-hide-add").click(function() {
+        $("#add-graph").toggle();
+        localStorage["show-add-form"] = $("#add-graph").is(":visible");
+        return false;
+    });
+
+    // Allow editing and sharing of dashboards
     $("#show-dash-code").click(function() {
         $("#dash-code").toggle();
         return false;
     });
-
     $("#dash-code-save").click(function() {
         targets = $("#dash-code textarea").val();
         // alert(targets);
@@ -216,6 +227,7 @@ $(window).load(function() {
         return false;
     });
 
+    // Modify the graphs
     $("#add-graph-button").click(function() {
 
         var input_params = $("#graph-params").val();
@@ -243,6 +255,7 @@ $(window).load(function() {
         return false;
     });
 
+    // Save refresh state for graphs
     $("#graphs").on("change", ".refresh", function() {
         var that = $(this);
 
