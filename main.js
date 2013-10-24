@@ -16,7 +16,7 @@ function init_targets() {
         ob[dash_name] = [];
         localStorage['targets'] = JSON.stringify(ob);
     }
-    console.log("[init_targets] targets: " + localStorage['targets']);
+    // console.log("[init_targets] targets: " + localStorage['targets']);
 }
 
 function all_dash_names() {
@@ -28,13 +28,13 @@ function all_dash_names() {
             keys.push(name);
         }
     }
-    console.log("[all_dash_names] " + keys);
+    // console.log("[all_dash_names] " + keys);
     return keys;
 }
 
 function all_targets_for_dash(_dash_name) {
     var targets = localStorage['targets'];
-    console.log("[all_targets_for_dash] targets: " + localStorage['targets']);
+    // console.log("[all_targets_for_dash] targets: " + localStorage['targets']);
     targets = JSON.parse(targets);
     if (!targets[_dash_name]) {
         targets[_dash_name] = [];
@@ -46,7 +46,7 @@ function update_targets_for_dash(_dash_name, _targets) {
     var all_targets = JSON.parse(localStorage['targets']);
     all_targets[_dash_name] = _targets;
     var json = JSON.stringify(all_targets);
-    console.log("[update_targets_for_dash] new targets: " + json);
+    // console.log("[update_targets_for_dash] new targets: " + json);
     localStorage["targets"] = json;
 }
 
@@ -127,7 +127,7 @@ function load_all_graphs() {
 
     var targets = all_targets_for_dash(dash_name);
     targets.forEach(function(element, index, array) {
-        console.log("a[" + index + "] = " + JSON.stringify(element));
+        // console.log("a[" + index + "] = " + JSON.stringify(element));
         appendGraph(index);
     });
 }
@@ -142,7 +142,7 @@ function refresh_all_graphs() {
         var url = url_for(target_index);
         d = new Date();
         url = url + "&nonce=" + d.getTime();
-        console.log(url);
+        // console.log(url);
         // that.find("img.img-graph").attr("src", url).fadeOut( "slow", function() {
         //     that.find("img.img-graph").fadeIn("slow");
         // });
