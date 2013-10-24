@@ -187,12 +187,35 @@ $(window).load(function() {
     $(".base-url-value").text(base_url());
     $("#graphite-host").text(graphite_host);
     $("#dash-name").text(dash_name);
+    $("#dash-code textarea").text(JSON.stringify(all_targets_for_dash(dash_name), null, "    "));
     $("#dash-names").text(all_dash_names().join(", "));
     document.title = dash_name + " -- yolo-graphite";
 
     var intervalID = window.setInterval(refresh_all_graphs, 60000);
     // Handle page visibility change
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
+
+    $("#show-dash-code").click(function() {
+        $("#dash-code").toggle();
+        return false;
+    });
+
+    $("#dash-code-save").click(function() {
+        targets = $("#dash-code textarea").val();
+        // alert(targets);
+
+        try {
+            targets = JSON.parse(targets);  // makes sure valid too
+            update_targets_for_dash(dash_name, targets);
+            alert("Saved new JSON for " + dash_name);
+            $("#dash-code").hide();
+            load_all_graphs();
+        } catch (e) {
+            console.error("Parsing error:", e);
+            alert("Not saved. " + e);
+        }
+        return false;
+    });
 
     $("#add-graph-button").click(function() {
 
