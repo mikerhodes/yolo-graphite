@@ -133,6 +133,14 @@ function load_all_graphs() {
 }
 
 function refresh_all_graphs() {
+
+    if (document[hidden]) {
+        // console.log("Hidden; skipping refresh.");
+        return;
+    } else {
+        // console.log("Not hidden; refresh.");
+    }
+
     var graphs = $(".graph");
     graphs.each(function(index, element) {
         var that = $(this);
@@ -150,6 +158,14 @@ function refresh_all_graphs() {
     });
 }
 
+// Refresh the graphs when the window's back in the foreground,
+// for graphs with refresh=true
+function handleVisibilityChange() {
+  if (!document[hidden]) {
+    // console.log("Into the foreground");
+    refresh_all_graphs();
+  }
+}
 
 /* -------------------------------------------------------------------------- */
 
@@ -175,6 +191,8 @@ $(window).load(function() {
     document.title = dash_name + " -- yolo-graphite";
 
     var intervalID = window.setInterval(refresh_all_graphs, 60000);
+    // Handle page visibility change
+    document.addEventListener(visibilityChange, handleVisibilityChange, false);
 
     $("#add-graph-button").click(function() {
 
