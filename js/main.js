@@ -176,13 +176,12 @@ $(window).load(function() {
     try {
         localStorageAvaliable = 'localStorage' in window && window['localStorage'] !== null;
     } catch (e) {
-        alert("no local storage!");
+        alert("yolo-graphite requires localStorage which your browser lacks; quitting.");
+        return;
     }
 
-    if (localStorageAvaliable) {
-        init_targets();
-        load_all_graphs();
-    }
+    init_targets();
+    load_all_graphs();
 
     $(".base-url-value").text(base_url());
     $("#graphite-host").text(graphite_host);
@@ -222,15 +221,11 @@ $(window).load(function() {
         var input_params = $("#graph-params").val();
         // alert(params);
 
-        if (localStorageAvaliable) {
-            var target_details = {
-                "input_params": input_params
-            };
-            prepend_target(target_details);
-            load_all_graphs();
-        } else {
-            appendGraph(target_index);
-        }
+        var target_details = {
+            "input_params": input_params
+        };
+        prepend_target(target_details);
+        load_all_graphs();
 
         return false;
     });
@@ -242,12 +237,8 @@ $(window).load(function() {
         var target_index = parseInt(graph_el.attr("data-targetIndex"));
         // alert(target_index);
 
-        if (localStorageAvaliable) {
-            remove_target(target_index);
-            load_all_graphs();
-        } else {
-            graph_el.remove();
-        }
+        remove_target(target_index);
+        load_all_graphs();
 
         return false;
     });
