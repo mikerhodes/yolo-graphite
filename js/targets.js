@@ -2,72 +2,133 @@ var uri = document.location;
 var parsed = parseUri(uri);
 
 var graphite_host = parsed.queryKey.host;
-// alert(graphite_host);
+var dash_name = parsed.queryKey.dash || "default";
 
-var dash_name = parsed.queryKey.dash_name || "default";
-var dash_name = parsed.queryKey.dash || dash_name;
-// alert(dash_name);
+
+// console.log(graphite_host);
+// console.log(dash_name);
+
+/*
+
+All data is stored in a PouchDB database, "yolo-graphite".
+
+Dashboards are stored in documents of type "dashboard".
+{
+    type: "dashboard",
+    name: "name",
+    targets: [... ids of targets ...]
+}
+
+*/
+var db = new PouchDB('yolo-graphite');
+var remoteCouch = false;
+
+db.info(function(err, info) {
+    console.log("Opened database: " + JSON.stringify(info, null, "  "));
+});
+
+// db.allDocs({include_docs: false}, function(err, response) {
+//     console.log("[allDocs]: " + JSON.stringify(response, null, "  "));
+// });
+
+
+function dashboard_id(_dash_name) {
+    var id = "yolo-dashboard-v1-" + _dash_name;
+    return id;
+}
 
 function init_targets() {
-    var targets = localStorage['targets'];
-    if (!targets) {
-        var ob = {};
-        ob[dash_name] = [];
-        localStorage['targets'] = JSON.stringify(ob);
-    }
-    // console.log("[init_targets] targets: " + localStorage['targets']);
+    // make sure we've a document for this target
+    var id = dashboard_id(dash_name);
+    db.get(id, function(err, doc) {
+        if (doc === undefined) {
+            db.put(
+                {
+                    _id: id,
+                    type: "dashboard",
+                    name: dash_name,
+                    "targets": []
+                },
+                function(err, response) {
+                    console.log("Created dashboard doc: " + id);
+                }
+            );
+        } else {
+            console.log("Existing dashboard doc: " + id);
+        }
+    });
 }
 
-function all_dash_names() {
-    var targets = localStorage['targets'];
-    targets = JSON.parse(targets);
-    var keys= [];
-    for (var name in targets) {
-        if (targets.hasOwnProperty(name)) {
-            keys.push(name);
+function all_dash_names(callback) {
+    function map(doc) {
+        // console.log("[map] " + JSON.stringify(doc));
+        if(doc.type && doc.type === "dashboard") {
+            emit(doc.name, null);
         }
     }
-    // console.log("[all_dash_names] " + keys);
-    return keys;
+    db.query({map: map}, {reduce: false}, function(err, response) {
+        var dashboards = [];
+        response.rows.forEach(function(row) {
+            dashboards.push(row.key);
+        });
+        console.log("[all_dash_names] " + dashboards);
+        callback(dashboards);
+    });
 }
 
-function all_targets_for_dash(_dash_name) {
-    var targets = localStorage['targets'];
-    // console.log("[all_targets_for_dash] targets: " + localStorage['targets']);
-    targets = JSON.parse(targets);
-    if (!targets[_dash_name]) {
-        targets[_dash_name] = [];
-    }
-    return targets[_dash_name];
+function all_targets_for_dash(_dash_name, callback) {
+    var id = dashboard_id(_dash_name);
+    db.get(id, function(err, doc) {
+        console.log('[all_targets_for_dash] ' + JSON.stringify(doc, null, " "));
+        callback(doc.targets);
+    });
 }
 
-function update_targets_for_dash(_dash_name, _targets) {
-    var all_targets = JSON.parse(localStorage['targets']);
-    all_targets[_dash_name] = _targets;
-    var json = JSON.stringify(all_targets);
-    // console.log("[update_targets_for_dash] new targets: " + json);
-    localStorage["targets"] = json;
+function update_targets_for_dash(_dash_name, _targets, callback) {
+    var id = dashboard_id(_dash_name);
+    db.get(id, function(err, doc) {
+        console.log('[update_targets_for_dash] ' + JSON.stringify(doc, null, " "));
+        doc.targets = _targets;
+        db.put(doc, function(err, response) {
+            if (err) {
+                alert(err + ": " + response);
+            } else {
+                console.log("Saved update to targets");
+            }
+            if (callback) { callback(); }
+        });
+    });
 }
 
-function target_for_index(target_index) {
-    var targets = all_targets_for_dash(dash_name);
-    return targets[target_index];
+function target_for_index(target_index, callback) {
+    all_targets_for_dash(dash_name, function(targets) {
+        callback(targets[target_index]);
+    });
 }
 
-function prepend_target(target_details) {
-    var targets = all_targets_for_dash(dash_name);
-    targets.push(target_details);
-    update_targets_for_dash(dash_name, targets);
+function prepend_target(target_details, callback) {
+    all_targets_for_dash(dash_name, function(targets) {
+        targets.push(target_details);
+        update_targets_for_dash(dash_name, targets, function() {
+            if (callback) { callback(); }
+        });
+    });
 }
 
-function remove_target(target_index) {
-    var targets = all_targets_for_dash(dash_name);
-    targets.splice(target_index, 1);
-    update_targets_for_dash(dash_name, targets);
+function remove_target(target_index, callback) {
+    all_targets_for_dash(dash_name, function(targets) {
+        targets.splice(target_index, 1);
+        update_targets_for_dash(dash_name, targets, function() {
+            if (callback) { callback(); }
+        });
+    });
 }
 
-function update_target(target_index, target_details) {
-    var targets = all_targets_for_dash(dash_name);
-    targets.splice(target_index, 1, target_details);
-    update_targets_for_dash(dash_name, targets);
+function update_target(target_index, target_details, callback) {
+    all_targets_for_dash(dash_name, function(targets) {
+        targets.splice(target_index, 1, target_details);
+        update_targets_for_dash(dash_name, targets, function() {
+            if (callback) { callback(); }
+        });
+    });
 }

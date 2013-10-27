@@ -12,45 +12,49 @@ function base_url() {
     return root;
 }
 
-function url_for(target_index) {
-    var input_params = input_params_for(target_index);
+function url_for(target) {
+    var input_params = input_params_for(target);
     var url = base_url() + input_params;
     return url;
 }
 
-function input_params_for(target_index) {
-    var input_params = target_for_index(target_index)["input_params"];
+function input_params_for(target) {
+    var input_params = target["input_params"];
     return input_params;
 }
 
 function appendGraph(target_index) {
-    var url = url_for(target_index);
-    var input_params = input_params_for(target_index);
-    var refresh = target_for_index(target_index)["refresh"];
+    target_for_index(target_index, function(target) {
+        var url = url_for(target);
+        var input_params = input_params_for(target);
+        var refresh = target["refresh"];
 
-    var insert = '<div class="graph" data-targetIndex="' + target_index + '">';
-    insert += '<p class="legend">' + input_params + ' <a href="' + url + '">go</a></p>';
-    insert += '<img src="' + url + '" width="1000" height="300" class="img-graph"/>';
-    insert += '<div class="controls">';
-    if (refresh) {
-        insert += '<p><input type="checkbox" class="refresh" checked="checked"/> Refresh</p>';
-    } else {
-        insert += '<p><input type="checkbox" class="refresh"/> Refresh</p>';
-    }
-    insert += '<p><input type="button" value="Remove" class="remove-graph-button"/></p>';
-    insert += '</div>';
-    insert += '</div>';
-    // alert(insert);
-    $("#graphs").prepend(insert);
+        var insert = '<div class="graph" data-targetIndex="' + target_index + '">';
+        insert += '<p class="legend">' + input_params + '</p>';
+        insert += '<img src="' + url + '" width="1000" height="300" class="img-graph"/>';
+        insert += '<div class="controls">';
+        insert += '<p><a href="' + url + '">go</a></p>';
+        if (refresh) {
+            insert += '<p><input type="checkbox" class="refresh" checked="checked"/> Refresh</p>';
+        } else {
+            insert += '<p><input type="checkbox" class="refresh"/> Refresh</p>';
+        }
+        insert += '<p><input type="button" value="Remove" class="remove-graph-button"/></p>';
+        insert += '</div>';
+        insert += '</div>';
+        // alert(insert);
+        $("#graphs").prepend(insert);
+    });
 }
 
 function load_all_graphs() {
     $("#graphs").empty();
 
-    var targets = all_targets_for_dash(dash_name);
-    targets.forEach(function(element, index, array) {
-        // console.log("a[" + index + "] = " + JSON.stringify(element));
-        appendGraph(index);
+    all_targets_for_dash(dash_name, function(targets) {
+        targets.forEach(function(element, index, array) {
+            // console.log("a[" + index + "] = " + JSON.stringify(element));
+            appendGraph(index);
+        });
     });
 }
 
@@ -69,14 +73,14 @@ function refresh_all_graphs() {
         var refresh = that.find('input.refresh').is(':checked');
         if (!refresh) { return; }
         var target_index = parseInt(that.attr("data-targetIndex"));
-        var url = url_for(target_index);
-        d = new Date();
-        url = url + "&nonce=" + d.getTime();
-        // console.log(url);
-        // that.find("img.img-graph").attr("src", url).fadeOut( "slow", function() {
-        //     that.find("img.img-graph").fadeIn("slow");
-        // });
-        that.find("img.img-graph").attr("src", url);
+
+        target_for_index(target_index, function(target) {
+            var url = url_for(target);
+            d = new Date();
+            url = url + "&nonce=" + d.getTime();
+            // console.log(url);
+            that.find("img.img-graph").attr("src", url);
+        });
     });
 }
 
@@ -106,12 +110,17 @@ $(window).load(function() {
     load_all_graphs();
 
     // Set up labels and things in the page.
+    document.title = dash_name + " -- yolo-graphite";
     $(".base-url-value").text(base_url());
     $("#graphite-host").text(graphite_host);
     $("#dash-name").text(dash_name);
-    $("#dash-code textarea").text(JSON.stringify(all_targets_for_dash(dash_name), null, "    "));
-    $("#dash-names").text(all_dash_names().join(", "));
-    document.title = dash_name + " -- yolo-graphite";
+
+    all_targets_for_dash(dash_name, function(targets) {
+        $("#dash-code textarea").text(JSON.stringify(targets, null, "  "));
+    });
+    all_dash_names(function(names) {
+        $("#dash-names").text(names.join(", "));
+    });
 
     // Refresh graphs -- on interval and depending on page visibility
     var intervalID = window.setInterval(refresh_all_graphs, 60000);
@@ -158,8 +167,9 @@ $(window).load(function() {
         var target_details = {
             "input_params": input_params
         };
-        prepend_target(target_details);
-        load_all_graphs();
+        prepend_target(target_details, function() {
+            load_all_graphs();
+        });
 
         return false;
     });
@@ -171,8 +181,9 @@ $(window).load(function() {
         var target_index = parseInt(graph_el.attr("data-targetIndex"));
         // alert(target_index);
 
-        remove_target(target_index);
-        load_all_graphs();
+        remove_target(target_index, function() {
+            load_all_graphs();
+        });
 
         return false;
     });
@@ -184,10 +195,11 @@ $(window).load(function() {
         var graph_el = that.closest(".graph");
         var target_index = parseInt(graph_el.attr("data-targetIndex"));
 
-        var details = target_for_index(target_index);
-        details["refresh"] = that.is(":checked");
-        console.log('[refresh] saved refresh: ' + details["refresh"]);
-        update_target(target_index, details);
+        target_for_index(target_index, function(details) {
+            details["refresh"] = that.is(":checked");
+            console.log('[refresh] saved refresh: ' + details["refresh"]);
+            update_target(target_index, details);
+        });
     });
 
 });
