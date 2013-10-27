@@ -119,7 +119,16 @@ $(window).load(function() {
         $("#dash-code textarea").text(JSON.stringify(targets, null, "  "));
     });
     all_dash_names(function(names) {
-        $("#dash-names").text(names.join(", "));
+        var links = [];
+        names.forEach(function(element, index, array) {
+            var url = new URI(document.location);
+            url.search(function(data) {
+                data.dash = element;
+            });
+            var link = '<a href="'+ url.href() + '">'+ element +'</a>';
+            links.push(link);
+        })
+        $("#dash-names").html(links.join("<br/> "));
     });
 
     // Refresh graphs -- on interval and depending on page visibility

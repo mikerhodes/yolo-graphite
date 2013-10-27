@@ -27,16 +27,25 @@
 
 <body>
 
-<form id="add-graph">
-    <p class="base-url"><span class="base-url-value">base url</span>
-    [<a href="http://graphite.readthedocs.org/en/1.0/url-api.html">help</a>]
-    </p>
-    <textarea name="graph-params" id="graph-params" placeholder="target=my.graphite.target&amp;from=-2d"></textarea>
-    <input type="button" value="Add" id="add-graph-button"/>
-</form>
-<p class="show-hide-add">[<a href="#" id="show-hide-add">toggle add form</a>]</p>
+<div id="dashboards">
+    <strong>Dashboards</strong>
+    <div id="dash-names"></div>
+</div>
 
-<div id="graphs">
+<div id="dashboard">
+
+    <form id="add-graph">
+        <p class="base-url"><span class="base-url-value">base url</span>
+        [<a href="http://graphite.readthedocs.org/en/1.0/url-api.html">help</a>]
+        </p>
+        <textarea name="graph-params" id="graph-params" placeholder="target=my.graphite.target&amp;from=-2d"></textarea>
+        <input type="button" value="Add" id="add-graph-button"/>
+    </form>
+    <p class="show-hide-add">[<a href="#" id="show-hide-add">toggle add form</a>]</p>
+
+    <div id="graphs">
+
+    </div>
 
 </div>
 
@@ -44,7 +53,6 @@
 
 <div class="footer">
     <p>Host: <span id="graphite-host"/></p>
-    <p>All:  <span id="dash-names"/></p>
     <p>Dash: <span id="dash-name"></span>
     [<a href="#" id="show-dash-code">show/hide code to edit or share</a>]</p>
     <div id="dash-code" style="display:none" >
