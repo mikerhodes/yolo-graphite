@@ -125,7 +125,12 @@ $(window).load(function() {
             url.search(function(data) {
                 data.dash = element;
             });
-            var link = '<a href="'+ url.href() + '">'+ element +'</a>';
+            var link;
+            if (element === dash_name) {
+                link = '<strong>'+ element +' &raquo;</strong>';
+            } else {
+                link = '<a href="'+ url.href() + '">'+ element +'</a>';
+            }
             links.push(link);
         })
         $("#dash-names").html(links.join("<br/> "));
