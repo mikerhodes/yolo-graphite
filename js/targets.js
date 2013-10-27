@@ -1,9 +1,7 @@
-var uri = document.location;
-var parsed = parseUri(uri);
 
-var graphite_host = parsed.queryKey.host;
-var dash_name = parsed.queryKey.dash || "default";
-
+uri = new URI(document.location);
+var graphite_host = uri.search(true)['host'];
+var dash_name = uri.search(true)['dash'] || "default";
 
 // console.log(graphite_host);
 // console.log(dash_name);
