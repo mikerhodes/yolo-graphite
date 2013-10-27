@@ -30,6 +30,14 @@ body a {
     line-height: 1.9em;
 }
 
+#dashboards input[type=text] {
+    background: black;
+    border: 1px solid #bbb;
+    padding: 3px;
+    width: 90%;
+    color: white;
+}
+
 #dashboard {
     float: right;
     width: 1100px;

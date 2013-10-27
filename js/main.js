@@ -211,4 +211,15 @@ $(window).load(function() {
         });
     });
 
+    // A new dashboard just redirects to the right URL
+    $("#new-dash-button").click(function() {
+        var name = $("#new-dash-name").val();
+        var url = new URI(document.location);
+        url.search(function(data) {
+            data.dash = name;
+        });
+        document.location = url;
+    });
+
+
 });
