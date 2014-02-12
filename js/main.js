@@ -1,6 +1,6 @@
 
 function base_url() {
-    var root = 'http://' + graphite_host + '/render/?';
+    var root = 'https://' + graphite_host + '/render/?';
     var params = new Array(
         "width=1000",
         "height=300",
@@ -132,7 +132,7 @@ $(window).load(function() {
                 link = '<a href="'+ url.href() + '">'+ element +'</a>';
             }
             links.push(link);
-        })
+        });
         $("#dash-names").html(links.join("<br/> "));
     });
 
